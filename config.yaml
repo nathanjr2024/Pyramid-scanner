@@ -1,0 +1,75 @@
+# Configuração da varredura da pirâmide de testes.
+#
+# Os caminhos em "repositorios" são relativos à raiz do workspace
+# (a pasta-pai de pyramid-scanner/), sem "./" na frente.
+# Adicione aqui todos os repositórios que deseja varrer.
+
+repositorios:
+  - nome: sisb-srv-beneficiario-exi
+    caminho: sisb-srv-beneficiario-exi
+    tipo: java
+
+  - nome: sisb-srv-documento-exi
+    caminho: sisb-srv-documento-exi
+    tipo: java
+
+  - nome: sisb-qaa-solicitacao-exi-web
+    caminho: sisb-qaa-solicitacao-exi-web
+    tipo: e2e_cucumber
+
+  # ── Exemplos para adicionar quando as fases 4/5 estiverem prontas ──────────
+  # - nome: sisb-bff-beneficiario-exi
+  #   caminho: sisb-bff-beneficiario-exi
+  #   tipo: typescript
+  #
+  # - nome: sisb-fed-procedimento-exi
+  #   caminho: sisb-fed-procedimento-exi
+  #   tipo: typescript
+
+
+# ── Regras de classificação por tipo de projeto ────────────────────────────────
+
+classificacao:
+
+  # Java Spring Boot / Java puro
+  java:
+    unitario:
+      padroes_arquivo:
+        - "*Test.java"
+      # Fase 4: anotações que excluem da camada unitária (sobem para integração)
+      excluir_anotacoes:
+        - "@SpringBootTest"
+        - "@DataJpaTest"
+        - "@DataMongoTest"
+        - "@WebMvcTest"
+
+    integracao:
+      padroes_arquivo:
+        - "*IT.java"
+      # Fase 4: anotações que classificam como integração mesmo sem sufixo IT
+      incluir_anotacoes:
+        - "@SpringBootTest"
+        - "@DataJpaTest"
+        - "@DataMongoTest"
+        - "@WebMvcTest"
+
+    e2e:
+      padroes_arquivo: []
+
+  # Cucumber + Selenium — toda a suíte é E2E
+  e2e_cucumber:
+    e2e:
+      padroes_arquivo:
+        - "*.feature"
+      contar_cenarios: true
+
+  # TypeScript — BFF (Jest) e FED (Karma + Jasmine) — Fase 5
+  typescript:
+    unitario:
+      padroes_arquivo:
+        - "*.test.ts"
+        - "*.spec.ts"
+    integracao:
+      padroes_arquivo: []
+    e2e:
+      padroes_arquivo: []

@@ -1,0 +1,36 @@
+{
+  "total": 191,
+  "camadas": {
+    "unitario": 185,
+    "integracao": 0,
+    "e2e": 6
+  },
+  "proporcoes": {
+    "unitario": 96.9,
+    "integracao": 0.0,
+    "e2e": 3.1
+  },
+  "repositorios": [
+    {
+      "nome": "sisb-srv-beneficiario-exi",
+      "unitario": 116,
+      "integracao": 0,
+      "e2e": 0,
+      "total": 116
+    },
+    {
+      "nome": "sisb-srv-documento-exi",
+      "unitario": 69,
+      "integracao": 0,
+      "e2e": 0,
+      "total": 69
+    },
+    {
+      "nome": "sisb-qaa-solicitacao-exi-web",
+      "unitario": 0,
+      "integracao": 0,
+      "e2e": 6,
+      "total": 6
+    }
+  ]
+}
