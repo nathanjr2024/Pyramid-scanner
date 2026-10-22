@@ -10,6 +10,7 @@ def gerar_html(
     total: dict,
     destino: Path,
     template_dir: Path,
+    workspace_nome: str = "",
 ) -> None:
     try:
         from jinja2 import Environment, FileSystemLoader, select_autoescape
@@ -49,6 +50,7 @@ def gerar_html(
         proporcoes=proporcoes,
         repositorios=repositorios,
         gerado_em=datetime.now().strftime("%d/%m/%Y %H:%M"),
+        workspace_nome=workspace_nome,
     )
 
     with open(destino, "w", encoding="utf-8") as f:

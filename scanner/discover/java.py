@@ -2,6 +2,7 @@ import fnmatch
 from pathlib import Path
 
 from scanner.core import ServiceReport, TestItem
+from scanner.extract.java_names import extrair_metodos
 
 _PASTAS_BUILD = {"target", "build", "out", ".gradle", "node_modules", ".mvn"}
 
@@ -14,10 +15,31 @@ def _eh_pasta_build(caminho: Path) -> bool:
     return any(parte in _PASTAS_BUILD for parte in caminho.parts)
 
 
+def _registrar_metodos(relatorio: ServiceReport, camada: str, arquivo: Path) -> None:
+    """Extrai metodos @Test do arquivo e registra um TestItem por metodo."""
+    metodos = extrair_metodos(arquivo)
+    if metodos:
+        for nome_metodo, descricao in metodos:
+            if camada == "unitario":
+                relatorio.unitario += 1
+            else:
+                relatorio.integracao += 1
+            relatorio.testes.append(
+                TestItem(camada, str(arquivo), metodo=nome_metodo, descricao=descricao)
+            )
+    else:
+        # Fallback: sem metodos detectados, conta o arquivo como 1 teste
+        if camada == "unitario":
+            relatorio.unitario += 1
+        else:
+            relatorio.integracao += 1
+        relatorio.testes.append(TestItem(camada, str(arquivo)))
+
+
 def varrer_java(nome: str, caminho_repo: Path, config_class: dict) -> ServiceReport:
     """
     Fase 1/2: classifica por nome de arquivo (*Test.java, *IT.java).
-    Fase 4 (futuro): refinará com leitura de anotações e @DisplayName.
+    Fase 4: extrai um TestItem por metodo @Test com descricao via @DisplayName ou camelCase.
     """
     relatorio = ServiceReport(nome=nome, caminho_existe=caminho_repo.exists())
 
@@ -31,12 +53,10 @@ def varrer_java(nome: str, caminho_repo: Path, config_class: dict) -> ServiceRep
         if _eh_pasta_build(arquivo):
             continue
         nome_arq = arquivo.name
-        # Integração tem precedência (*IT.java é mais específico que *Test.java)
+        # Integracao tem precedencia (*IT.java e mais especifico que *Test.java)
         if _bate_padrao(nome_arq, padroes_integ):
-            relatorio.integracao += 1
-            relatorio.testes.append(TestItem("integracao", str(arquivo)))
+            _registrar_metodos(relatorio, "integracao", arquivo)
         elif _bate_padrao(nome_arq, padroes_unit):
-            relatorio.unitario += 1
-            relatorio.testes.append(TestItem("unitario", str(arquivo)))
+            _registrar_metodos(relatorio, "unitario", arquivo)
 
     return relatorio

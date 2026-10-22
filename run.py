@@ -76,9 +76,10 @@ def main() -> None:
         print(f"JSON gravado em: {destino}")
 
     if args.html:
-        template_dir = scanner_dir / "scanner" / "templates"
-        destino      = output_dir / "pyramid.html"
-        gerar_html(relatorios, total, destino, template_dir)
+        template_dir   = scanner_dir / "scanner" / "templates"
+        destino        = output_dir / "pyramid.html"
+        workspace_nome = WORKSPACE_ROOT.name
+        gerar_html(relatorios, total, destino, template_dir, workspace_nome)
         print(f"HTML gravado em: {destino}")
 
 

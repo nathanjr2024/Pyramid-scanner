@@ -6,6 +6,7 @@ from typing import Optional
 class TestItem:
     camada: str             # "unitario" | "integracao" | "e2e"
     arquivo: str
+    metodo: Optional[str] = None
     descricao: Optional[str] = None
 
 
